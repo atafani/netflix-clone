@@ -14,7 +14,7 @@ const Browse: NextPage = () => {
             <h1 className="text-white text-5xl">Who's watching?</h1>
             <div className="flex flex-row justify-center align-middle gap-10">
                 {PROFILES.map((profile: Profile, index: number) => <div key={profile.id} onClick={() => setSelectedProfile(profile)} className="hover:cursor-pointer">
-                    <img className={`rounded-sm h-36 w-36 ${index === 0 ? 'border-2 border-white' : ''}`} src={profile.img} />
+                    ç‚
                     <p className={`${index === 0 ? 'text-white' : 'text-gray-400'} text-center text-lg mt-3`}>{profile.name}</p>
                 </div>)}
             </div>
