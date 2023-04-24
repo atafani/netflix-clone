@@ -83,7 +83,7 @@ const Index: NextPage = () => {
                   fieldState: { invalid, isTouched, isDirty, error },
                   formState,
                 }) => (
-                  <div className="relative flex-1">
+                  <div className="relative  w-80">
                     <input
                       type="email"
                       id="email"
@@ -209,7 +209,7 @@ const Index: NextPage = () => {
                     selectedId === question.id ? "h-fit" : "h-0"
                   }`}
                 >
-                  <p className="p-5">{question.ans}</p>
+                  <p className="p-5 lg:text-lg">{question.ans}</p>
                 </div>
               </div>
             ))}
@@ -219,7 +219,10 @@ const Index: NextPage = () => {
               Ready to watch? Enter your email to create or restart your
               membership.
             </p>
-            <form action="#" className="z-20 relative flex flex-row gap-3 mt-4">
+            <form
+              action="#"
+              className="z-20 relative flex flex-row gap-3 mt-4 "
+            >
               <Controller
                 control={control}
                 name="email"
@@ -244,7 +247,7 @@ const Index: NextPage = () => {
                   fieldState: { invalid, isTouched, isDirty, error },
                   formState,
                 }) => (
-                  <div className="relative flex-1">
+                  <div className="relative w-80">
                     <input
                       type="email"
                       id="email"
@@ -271,7 +274,6 @@ const Index: NextPage = () => {
                   </div>
                 )}
               />
-
               <div>
                 <button
                   type="submit"
@@ -295,27 +297,57 @@ const Index: NextPage = () => {
             </a>
             <div className="flex flex-row flex-wrap">
               <div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 flex flex-col gap-2">
-                <a href="">FAQ</a>
-                <a href="">Investor Relations</a>
-                <a href="">Privacy</a>
-                <a href="">Speed Test</a>
+                <a href="#" className="text-sm">
+                  FAQ
+                </a>
+                <a href="#" className="text-sm">
+                  Investor Relations
+                </a>
+                <a href="#" className="text-sm">
+                  Privacy
+                </a>
+                <a href="#" className="text-sm">
+                  Speed Test
+                </a>
               </div>
               <div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 flex flex-col gap-2">
-                <a href="">Help Center</a>
-                <a href="">Jobs</a>
-                <a href="">Cookie Preferences</a>
-                <a href="">Legal Notices</a>
+                <a href="#" className="text-sm">
+                  Help Center
+                </a>
+                <a href="#" className="text-sm">
+                  Jobs
+                </a>
+                <a href="#" className="text-sm">
+                  Cookie Preferences
+                </a>
+                <a href="#" className="text-sm">
+                  Legal Notices
+                </a>
               </div>
               <div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 flex flex-col gap-2">
-                <a href="">Account</a>
-                <a href="">Ways to Watch</a>
-                <a href="">Coorporate Information</a>
-                <a href="">Only on Netflix</a>
+                <a href="#" className="text-sm">
+                  Account
+                </a>
+                <a href="#" className="text-sm">
+                  Ways to Watch
+                </a>
+                <a href="#" className="text-sm">
+                  Coorporate Information
+                </a>
+                <a href="#" className="text-sm">
+                  Only on Netflix
+                </a>
               </div>
               <div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 flex flex-col gap-2">
-                <a href="">Media Center</a>
-                <a href="">Terms of Use</a>
-                <a href="">Contact Us</a>
+                <a href="#" className="text-sm">
+                  Media Center
+                </a>
+                <a href="#" className="text-sm">
+                  Terms of Use
+                </a>
+                <a href="#" className="text-sm">
+                  Contact Us
+                </a>
               </div>
             </div>
           </div>

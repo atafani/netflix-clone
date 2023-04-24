@@ -2,9 +2,15 @@
   "users": [
     {
       "id": 1,
-      "name": "Anxhela Tafani",
+      "firstName": "Anxhela",
+      "lastName": "Tafani",
       "email": "anxhela@gmail.com",
-      "password": "anxhela123"
+      "password": "anxhela123",
+      "emailSpecialOffers": false,
+      "cardNumber": "",
+      "expDate":"",
+      "cvv":"",
+      "plan":""
     }
   ]
 }
