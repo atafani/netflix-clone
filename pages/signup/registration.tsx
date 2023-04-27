@@ -1,8 +1,19 @@
 import type { NextPage } from "next";
 import { SignUpFooter, SignUpHeader } from "views";
 import Image from "next/image";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+import { useAuth } from "hooks";
+import { eAuthStatus } from "enums";
 
 const Registration: NextPage = () => {
+  const router = useRouter();
+  const { auth } = useAuth();
+  useEffect(() => {
+    if (auth.status === eAuthStatus.Success && auth.user?.registered) {
+      router.push("/signup/password");
+    }
+  }, [auth.status]);
   return (
     <div className="relative">
       <SignUpHeader />
@@ -17,15 +28,12 @@ const Registration: NextPage = () => {
           />
           <p className="text-xl uppercase mt-8">Step 1 of 3</p>
           <h1 className="text-2xl my-2">Finish setting up your account</h1>
-          <p>Netflix is personaliyed for you.</p>
+          <p>Netflix is personalized for you.</p>
           <p>Create a password to watch on any device anytime.</p>
           <button
-            type="submit"
+            type="button"
             className="group relative flex w-full mt-10 justify-center rounded-md border border-transparent bg-netflix py-3 px-7 sm:text-lg font-medium text-white hover:bg-red-700 focus:outline-none "
-            onClick={(e: any) => {
-              e.preventDefault();
-              //   handleSubmit(handleSignIn)();
-            }}
+            onClick={() => router.push("/signup/regform")}
           >
             Next
           </button>

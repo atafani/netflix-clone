@@ -9,6 +9,7 @@ import {
   formatPhoneNumberIntl,
 } from "react-phone-number-input";
 import { FaCaretDown } from "react-icons/fa";
+import { signIn } from "next-auth/react";
 type SignInForm = {
   emailPhone: string;
   password: string;
@@ -28,9 +29,15 @@ const Login: NextPage = () => {
     setIsPasswordShown(!isPasswordShown);
   };
 
-  const handleSignIn = (data: SignInForm) => {
+  const handleSignIn = async (data: SignInForm) => {
     console.log(data);
-    router.push("/browse");
+    const res = await signIn("credentials", {
+      email: data.emailPhone,
+      password: data.password,
+      redirect: false,
+    });
+    console.log("sign in res", res);
+    // router.push("/browse");
   };
   const regionNames = new Intl.DisplayNames(["us"], { type: "region" });
   return (

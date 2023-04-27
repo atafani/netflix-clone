@@ -2,8 +2,10 @@ import type { NextPage } from "next";
 import { SignUpFooter, SignUpHeader } from "views";
 import { BiCheck } from "react-icons/bi";
 import { CiCircleCheck } from "react-icons/ci";
+import { useRouter } from "next/router";
 
 const SignUp: NextPage = () => {
+  const router = useRouter();
   return (
     <div className="relative">
       <SignUpHeader />
@@ -27,12 +29,9 @@ const SignUp: NextPage = () => {
             <p className="text-start">Unlimited viewing on all devices.</p>
           </div>
           <button
-            type="submit"
+            type="button"
             className="group relative flex w-full mt-10 justify-center rounded-md border border-transparent bg-netflix py-3 px-7 sm:text-lg font-medium text-white hover:bg-red-700 focus:outline-none "
-            onClick={(e: any) => {
-              e.preventDefault();
-              //   handleSubmit(handleSignIn)();
-            }}
+            onClick={() => router.push("/signup/planform")}
           >
             Next
           </button>

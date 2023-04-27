@@ -1,7 +1,12 @@
-import type { NextPage } from "next";
+import { UserDTO } from "dtos";
+import { eAuthStatus } from "enums";
+import { useAuth } from "hooks";
+import type { GetServerSidePropsContext, NextPage } from "next";
+import { getSession, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { AiOutlinePlus } from "react-icons/ai";
 import { IoMdClose } from "react-icons/io";
@@ -31,7 +36,27 @@ const QUESTIONS: Question[] = [
 ];
 const Index: NextPage = () => {
   const { control, handleSubmit } = useForm<GetStartedForm>();
+  const { control: control1, handleSubmit: handleSubmit1 } =
+    useForm<GetStartedForm>();
   const [selectedId, setSelectedId] = useState<number>(-1);
+  const [isRegistering, setIsRegistering] = useState(false);
+  const { handleRegister, auth } = useAuth();
+  const router = useRouter();
+  const { data: session } = useSession();
+
+  const handleGetStarted = async (data: GetStartedForm) => {
+    setIsRegistering(true);
+    await handleRegister(data);
+    setIsRegistering(false);
+    router.push("/signup/registration");
+  };
+
+  useEffect(() => {
+    if (session?.user) {
+      router.push("/browse");
+    }
+  }, [session]);
+
   return (
     <div className="bg-[#080A1B]">
       <div className="flex min-h-screen flex-row items-center justify-center bg-[url('/images/login-bg.png')] bg-no-repeat bg-cover bg-blend-darken relative">
@@ -65,18 +90,11 @@ const Index: NextPage = () => {
                 rules={{
                   required: {
                     value: true,
-                    message: "Please enter a valid password.",
+                    message: "Please enter a valid email.",
                   },
-                  minLength: {
-                    value: 4,
-                    message:
-                      "Your password must contain between 4 and 60 characters.",
-                  },
-                  maxLength: {
-                    value: 60,
-                    message:
-                      "Your password must contain between 4 and 60 characters.",
-                  },
+                  validate: (value: string) =>
+                    /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,}$/.test(value) ||
+                    "Please enter a valid email.",
                 }}
                 render={({
                   field: { onChange, onBlur, value, name, ref },
@@ -97,7 +115,7 @@ const Index: NextPage = () => {
                       ref={ref}
                     />
                     {error && (
-                      <p className="text-orange-500  text-xs mt-2">
+                      <p className="text-red-600  text-xs mt-2">
                         {error.message}
                       </p>
                     )}
@@ -114,13 +132,36 @@ const Index: NextPage = () => {
               <div>
                 <button
                   type="submit"
-                  className="group w-full justify-center rounded-md border border-transparent bg-netflix py-3 px-5 sm:text-xl font-medium text-white hover:bg-red-700 focus:outline-none "
+                  className="group w-full min-w-[9rem] justify-center rounded-md border border-transparent bg-netflix py-3 px-5 sm:text-xl font-medium text-white hover:bg-red-700 focus:outline-none "
                   onClick={(e: any) => {
                     e.preventDefault();
-                    // handleSubmit(handleSignIn)()
+                    handleSubmit(handleGetStarted)();
                   }}
                 >
-                  Get Started
+                  {isRegistering ? (
+                    <svg
+                      className="animate-spin h-5 w-5 mx-auto my-1 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l1-1.647z"
+                      ></path>
+                    </svg>
+                  ) : (
+                    "Get Started"
+                  )}
                 </button>
               </div>
             </form>
@@ -224,23 +265,16 @@ const Index: NextPage = () => {
               className="z-20 relative flex flex-row gap-3 mt-4 "
             >
               <Controller
-                control={control}
+                control={control1}
                 name="email"
                 rules={{
                   required: {
                     value: true,
-                    message: "Please enter a valid password.",
+                    message: "Please enter an email.",
                   },
-                  minLength: {
-                    value: 4,
-                    message:
-                      "Your password must contain between 4 and 60 characters.",
-                  },
-                  maxLength: {
-                    value: 60,
-                    message:
-                      "Your password must contain between 4 and 60 characters.",
-                  },
+                  validate: (value: string) =>
+                    /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,}$/.test(value) ||
+                    "Please enter a valid email.",
                 }}
                 render={({
                   field: { onChange, onBlur, value, name, ref },
@@ -261,7 +295,7 @@ const Index: NextPage = () => {
                       ref={ref}
                     />
                     {error && (
-                      <p className="text-orange-500  text-xs mt-2">
+                      <p className="text-red-600  text-xs mt-2">
                         {error.message}
                       </p>
                     )}
@@ -277,13 +311,36 @@ const Index: NextPage = () => {
               <div>
                 <button
                   type="submit"
-                  className="group w-full justify-center rounded-md border border-transparent bg-netflix py-3 px-5 sm:text-xl font-medium text-white hover:bg-red-700 focus:outline-none "
+                  className="group w-full min-w-[9rem] justify-center rounded-md border border-transparent bg-netflix py-3 px-5 sm:text-xl font-medium text-white hover:bg-red-700 focus:outline-none "
                   onClick={(e: any) => {
                     e.preventDefault();
-                    // handleSubmit(handleSignIn)()
+                    handleSubmit(handleGetStarted)();
                   }}
                 >
-                  Get Started
+                  {isRegistering ? (
+                    <svg
+                      className="animate-spin h-5 w-5 mx-auto my-1 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l1-1.647z"
+                      ></path>
+                    </svg>
+                  ) : (
+                    "Get Started"
+                  )}
                 </button>
               </div>
             </form>
@@ -358,3 +415,19 @@ const Index: NextPage = () => {
 };
 
 export default Index;
+export async function getServerSideProps({
+  req,
+  res,
+}: GetServerSidePropsContext) {
+  const session = await getSession({ req });
+  if (session) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
+  return { props: { session } };
+}

@@ -1,16 +1,16 @@
-import axios, {AxiosError} from "axios";
+import axios, { AxiosError } from "axios";
 import Router from "next/router";
-import {GetServerSidePropsContext, NextApiRequest} from "next/types";
-import {toast} from "react-toastify";
+import { GetServerSidePropsContext, NextApiRequest } from "next/types";
+import { toast } from "react-toastify";
 import cookie from "cookie";
-import {TokenDTO} from "../models";
+import { TokenDTO } from "../dtos";
 
 const isServer = () => {
   return typeof window === "undefined";
 };
 
 let context: GetServerSidePropsContext;
-const baseURL = process.env.NEXT_PUBLIC_BACKEND_URL!;
+const baseURL = process.env.NEXT_PUBLIC_BACKEND_URL || "";
 
 export function getToken(): TokenDTO {
   let data: any = cookie.parse(
@@ -22,7 +22,6 @@ export function getToken(): TokenDTO {
 
 export const clearToken = () => {
   if (!isServer()) {
-    localStorage.clear();
     Router.push("/login");
   }
 };
@@ -53,39 +52,31 @@ api.interceptors.request.use((config) => {
 
 api.interceptors.response.use(
   async (response) => {
+    console.log("axios res", response);
     let data = null;
-    if (response?.data?.errors) {
-      toast.error(response?.data?.errors);
-    }
     if (response?.data?.result) {
       data = response.data.data;
     }
-    if (response?.config?.url?.includes("authentication/login")) {
-      localStorage.setItem("logged", JSON.stringify(true));
-    }
-    if (response?.data?.statusCode === 401) {
-      const retryResponse: any = await refreshToken(response);
-      data = retryResponse.data.data;
-    }
+    // if (response?.data?.statusCode === 401) {
+    //   const retryResponse: any = await refreshToken(response);
+    //   data = retryResponse.data.data;
+    // }
     return data;
   },
   async (error: AxiosError<any>) => {
     // check conditions to refresh token
-    if (
-      (error.response?.status === 401 &&
-        !error.response?.config?.url?.includes("authentication/refresh") &&
-        !error.response?.config?.url?.includes("authentication/login")) ||
-      error.response?.config?.url?.includes("authentication/refresh")
-    ) {
+    console.log("axios error", error);
+    if (error.response?.status === 401) {
       clearToken();
     } else {
-      if (error.response?.data?.Errors) {
-        toast.error(error.response?.data?.Errors);
+      if (error.response?.data?.error) {
+        toast.error(error.response?.data?.error);
       }
     }
+    if (error.response?.status === 409) return error.response.data;
     return Promise.reject(error);
   },
-  {synchronous: false}
+  { synchronous: false }
 );
 
 let fetchingToken = false;

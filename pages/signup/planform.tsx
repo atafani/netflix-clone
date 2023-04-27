@@ -1,16 +1,13 @@
+import { ePlanType } from "enums";
 import type { NextPage } from "next";
 import Link from "next/link";
 import { useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { BiCheck } from "react-icons/bi";
 import { SignUpFooter, SignUpHeader } from "views";
-enum PlanType {
-  Basic,
-  Standard,
-  Premium,
-}
+
 type ChoosePlanForm = {
-  type: PlanType;
+  type: ePlanType;
 };
 const PLAN_DATA = [
   {
@@ -61,7 +58,7 @@ const PlanForm: NextPage = () => {
           <Controller
             control={control}
             name="type"
-            defaultValue={PlanType.Premium}
+            defaultValue={ePlanType.Premium}
             rules={{
               required: {
                 value: true,
@@ -80,17 +77,17 @@ const PlanForm: NextPage = () => {
                       <td className="hidden lg:table-cell"></td>
                       <td
                         className="p-1 lg:p-5"
-                        onClick={() => onChange(PlanType.Basic)}
+                        onClick={() => onChange(ePlanType.Basic)}
                       >
                         <div
                           className={`relative mx-auto text-white w-28 h-16 lg:h-28 flex justify-center items-center ${
-                            value === PlanType.Basic
+                            value === ePlanType.Basic
                               ? "bg-netflix"
                               : "bg-red-400 "
                           }`}
                         >
                           Basic
-                          {value === PlanType.Basic && (
+                          {value === ePlanType.Basic && (
                             <div
                               className={`absolute top-full border-8  border-transparent border-t-netflix`}
                             ></div>
@@ -99,17 +96,17 @@ const PlanForm: NextPage = () => {
                       </td>
                       <td
                         className="p-1 lg:p-5"
-                        onClick={() => onChange(PlanType.Standard)}
+                        onClick={() => onChange(ePlanType.Standard)}
                       >
                         <div
                           className={`relative mx-auto text-white w-28 h-16 lg:h-28 flex justify-center items-center ${
-                            value === PlanType.Standard
+                            value === ePlanType.Standard
                               ? "bg-netflix"
                               : "bg-red-400 "
                           }`}
                         >
                           Standard
-                          {value === PlanType.Standard && (
+                          {value === ePlanType.Standard && (
                             <div
                               className={`absolute top-full border-8  border-transparent border-t-netflix`}
                             ></div>
@@ -118,17 +115,17 @@ const PlanForm: NextPage = () => {
                       </td>
                       <td
                         className="p-1 lg:p-5"
-                        onClick={() => onChange(PlanType.Premium)}
+                        onClick={() => onChange(ePlanType.Premium)}
                       >
                         <div
                           className={`relative mx-auto text-white w-28 h-16 lg:h-28 flex justify-center items-center ${
-                            value === PlanType.Premium
+                            value === ePlanType.Premium
                               ? "bg-netflix"
                               : "bg-red-400 "
                           }`}
                         >
                           Premium
-                          {value === PlanType.Premium && (
+                          {value === ePlanType.Premium && (
                             <div
                               className={`absolute top-full border-8  border-transparent border-t-netflix`}
                             ></div>
@@ -151,31 +148,31 @@ const PlanForm: NextPage = () => {
                           </td>
                           <td
                             className={`p-3 text-center font-medium ${
-                              value === PlanType.Basic
+                              value === ePlanType.Basic
                                 ? "text-netflix"
                                 : "text-gray-600"
                             }`}
-                            onClick={() => onChange(PlanType.Basic)}
+                            onClick={() => onChange(ePlanType.Basic)}
                           >
                             {data.basic}
                           </td>
                           <td
                             className={`p-3 text-center font-medium ${
-                              value === PlanType.Standard
+                              value === ePlanType.Standard
                                 ? "text-netflix"
                                 : "text-gray-600"
                             }`}
-                            onClick={() => onChange(PlanType.Standard)}
+                            onClick={() => onChange(ePlanType.Standard)}
                           >
                             {data.standard}
                           </td>
                           <td
                             className={`p-3 text-center font-medium ${
-                              value === PlanType.Premium
+                              value === ePlanType.Premium
                                 ? "text-netflix"
                                 : "text-gray-600"
                             }`}
-                            onClick={() => onChange(PlanType.Premium)}
+                            onClick={() => onChange(ePlanType.Premium)}
                           >
                             {data.premium}
                           </td>
@@ -193,11 +190,11 @@ const PlanForm: NextPage = () => {
                       </td>
                       <td
                         className="p-3"
-                        onClick={() => onChange(PlanType.Basic)}
+                        onClick={() => onChange(ePlanType.Basic)}
                       >
                         <BiCheck
                           className={`mx-auto text-3xl ${
-                            value === PlanType.Basic
+                            value === ePlanType.Basic
                               ? "text-netflix"
                               : "text-red-400"
                           }`}
@@ -205,11 +202,11 @@ const PlanForm: NextPage = () => {
                       </td>
                       <td
                         className="p-3"
-                        onClick={() => onChange(PlanType.Standard)}
+                        onClick={() => onChange(ePlanType.Standard)}
                       >
                         <BiCheck
                           className={`mx-auto text-3xl ${
-                            value === PlanType.Standard
+                            value === ePlanType.Standard
                               ? "text-netflix"
                               : "text-red-400"
                           }`}
@@ -217,11 +214,11 @@ const PlanForm: NextPage = () => {
                       </td>
                       <td
                         className="p-3"
-                        onClick={() => onChange(PlanType.Premium)}
+                        onClick={() => onChange(ePlanType.Premium)}
                       >
                         <BiCheck
                           className={`mx-auto text-3xl ${
-                            value === PlanType.Premium
+                            value === ePlanType.Premium
                               ? "text-netflix"
                               : "text-red-400"
                           }`}
