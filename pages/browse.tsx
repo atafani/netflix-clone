@@ -1,12 +1,6 @@
-import type {
-  GetServerSideProps,
-  GetServerSidePropsContext,
-  NextPage,
-} from "next";
-import { getServerSession } from "next-auth";
-import { getSession, useSession } from "next-auth/react";
+import type { NextPage } from "next";
+import { useSession } from "next-auth/react";
 import { useState } from "react";
-import { authOptions } from "./api/auth/[...nextauth]";
 type Profile = {
   id: number;
   name: string;
@@ -24,10 +18,16 @@ const PROFILES: Profile[] = [
     img: "http://occ-0-6035-114.1.nflxso.net/dnm/api/v6/K6hjPJd6cR6FpVELC5Pd6ovHRSk/AAAABdCemZ64K8SshrRuXpQ_cGA5j6EDCD-sE1eNV0of8K9ipVocEYtkD0g9MmicVHY185FVSgU3jsnzF9Ii7dVH1ubuGhFXs37HzCjN.png?r=b36",
   },
 ];
-const Browse: NextPage = ({ session }: any) => {
+const Browse: NextPage = () => {
   const [selectedProfile, setSelectedProfile] = useState<Profile>(PROFILES[0]);
-  //   const { data: session } = useSession();
-  console.log("session", session);
+  const { data: session, status } = useSession({
+    required: true,
+    onUnauthenticated() {
+      // The user is not authenticated, handle it here.
+      console.log("WHY IS IT NOT AUTHENTICATED");
+    },
+  });
+
   return !selectedProfile ? (
     <div className="flex min-h-screen flex-col items-center gap-10 justify-center bg-black relative md:py-20">
       <h1 className="text-white text-5xl">Who's watching?</h1>
@@ -55,20 +55,3 @@ const Browse: NextPage = ({ session }: any) => {
 };
 
 export default Browse;
-export async function getServerSideProps({
-  req,
-  res,
-}: GetServerSidePropsContext) {
-  const session = await getServerSession(req, res, authOptions);
-  console.log("session", session);
-  //   if (!session) {
-  //     return {
-  //       redirect: {
-  //         destination: "/login",
-  //         permanent: false,
-  //       },
-  //     };
-  //   }
-
-  return { props: { session } };
-}

@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   getCountries,
@@ -9,7 +9,8 @@ import {
   formatPhoneNumberIntl,
 } from "react-phone-number-input";
 import { FaCaretDown } from "react-icons/fa";
-import { signIn } from "next-auth/react";
+import { SignInResponse, signIn, useSession } from "next-auth/react";
+import { eSessionStatus } from "enums";
 type SignInForm = {
   emailPhone: string;
   password: string;
@@ -21,6 +22,19 @@ const Login: NextPage = () => {
   const ref = useRef<HTMLInputElement>(null);
   const { control, handleSubmit } = useForm<SignInForm>();
   const router = useRouter();
+
+  const { data: session, status } = useSession({
+    required: true,
+    onUnauthenticated() {
+      // The user is not authenticated, handle it here.
+      console.log("WHY IS IT NOT AUTHENTICATED");
+    },
+  });
+
+  useEffect(() => {
+    if (status === eSessionStatus.Authenticated) router.push("/browse");
+  }, [status]);
+
   const handleShowPassword = () => {
     setIsPasswordShown(!isPasswordShown);
     if (ref.current) {
@@ -31,13 +45,16 @@ const Login: NextPage = () => {
 
   const handleSignIn = async (data: SignInForm) => {
     console.log(data);
-    const res = await signIn("credentials", {
+    const res: SignInResponse | undefined = await signIn("credentials", {
       email: data.emailPhone,
       password: data.password,
       redirect: false,
+      callbackUrl: "/browse",
     });
     console.log("sign in res", res);
-    // router.push("/browse");
+    if (res && res.ok && res.url) {
+      router.push(res.url);
+    }
   };
   const regionNames = new Intl.DisplayNames(["us"], { type: "region" });
   return (

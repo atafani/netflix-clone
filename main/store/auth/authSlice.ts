@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import authService from "./authServices";
 import { CookieValueTypes, getCookie } from "cookies-next";
 import { eAuthStatus } from "enums";
@@ -27,6 +27,9 @@ const authSlice = createSlice({
     reset: (state) => {
       state.status = eAuthStatus.Initial;
       state.message = "";
+    },
+    setUser: (state, action: PayloadAction<UserDTO>) => {
+      state.user = { ...action.payload };
     },
   },
 
@@ -98,5 +101,5 @@ export const login = createAsyncThunk(
   }
 );
 
-export const { reset } = authSlice.actions;
+export const { reset, setUser } = authSlice.actions;
 export default authSlice.reducer;

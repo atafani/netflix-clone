@@ -1,7 +1,8 @@
 import { UserDTO } from "dtos";
-import { eAuthStatus } from "enums";
+import { eAuthStatus, eSessionStatus } from "enums";
 import { useAuth } from "hooks";
 import type { GetServerSidePropsContext, NextPage } from "next";
+import { getServerSession } from "next-auth";
 import { getSession, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,6 +11,8 @@ import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { AiOutlinePlus } from "react-icons/ai";
 import { IoMdClose } from "react-icons/io";
+import { authOptions } from "./api/auth/[...nextauth]";
+import { Spinner } from "components";
 type GetStartedForm = {
   email: string;
 };
@@ -42,7 +45,17 @@ const Index: NextPage = () => {
   const [isRegistering, setIsRegistering] = useState(false);
   const { handleRegister, auth } = useAuth();
   const router = useRouter();
-  const { data: session } = useSession();
+  const { data: session, status } = useSession({
+    required: true,
+    onUnauthenticated() {
+      // The user is not authenticated, handle it here.
+      console.log("WHY IS IT NOT AUTHENTICATED");
+    },
+  });
+
+  useEffect(() => {
+    if (status === eSessionStatus.Authenticated) router.push("/browse");
+  }, [status]);
 
   const handleGetStarted = async (data: GetStartedForm) => {
     setIsRegistering(true);
@@ -87,6 +100,7 @@ const Index: NextPage = () => {
               <Controller
                 control={control}
                 name="email"
+                defaultValue=""
                 rules={{
                   required: {
                     value: true,
@@ -138,30 +152,7 @@ const Index: NextPage = () => {
                     handleSubmit(handleGetStarted)();
                   }}
                 >
-                  {isRegistering ? (
-                    <svg
-                      className="animate-spin h-5 w-5 mx-auto my-1 text-white"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      ></circle>
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l1-1.647z"
-                      ></path>
-                    </svg>
-                  ) : (
-                    "Get Started"
-                  )}
+                  {isRegistering ? <Spinner /> : "Get Started"}
                 </button>
               </div>
             </form>
@@ -267,6 +258,7 @@ const Index: NextPage = () => {
               <Controller
                 control={control1}
                 name="email"
+                defaultValue=""
                 rules={{
                   required: {
                     value: true,
@@ -317,30 +309,7 @@ const Index: NextPage = () => {
                     handleSubmit(handleGetStarted)();
                   }}
                 >
-                  {isRegistering ? (
-                    <svg
-                      className="animate-spin h-5 w-5 mx-auto my-1 text-white"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      ></circle>
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l1-1.647z"
-                      ></path>
-                    </svg>
-                  ) : (
-                    "Get Started"
-                  )}
+                  {isRegistering ? <Spinner /> : "Get Started"}
                 </button>
               </div>
             </form>
@@ -415,19 +384,3 @@ const Index: NextPage = () => {
 };
 
 export default Index;
-export async function getServerSideProps({
-  req,
-  res,
-}: GetServerSidePropsContext) {
-  const session = await getSession({ req });
-  if (session) {
-    return {
-      redirect: {
-        destination: "/login",
-        permanent: false,
-      },
-    };
-  }
-
-  return { props: { session } };
-}

@@ -1,3 +1,4 @@
+import { Spinner } from "components";
 import { useAuth } from "hooks";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
@@ -11,13 +12,14 @@ type RegistrationForm = {
 };
 const RegForm: NextPage = () => {
   const [isPasswordShown, setIsPasswordShown] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(false);
   const { control, handleSubmit } = useForm<RegistrationForm>();
   const { auth, handleRegister } = useAuth();
   const ref = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
   useEffect(() => {
-    if (router && auth.user?.registered) router.push("/signup/password");
+    if (router && auth.user?.registered) router.push("/signup");
   }, [router, auth]);
 
   const handleShowPassword = () => {
@@ -26,6 +28,12 @@ const RegForm: NextPage = () => {
       ref.current.focus();
     }
     setIsPasswordShown(!isPasswordShown);
+  };
+
+  const handleNext = async (data: RegistrationForm) => {
+    setIsRegistering(true);
+    await handleRegister(data);
+    setIsRegistering(false);
   };
 
   return (
@@ -42,6 +50,7 @@ const RegForm: NextPage = () => {
           <Controller
             control={control}
             name="email"
+            defaultValue={auth.user?.email}
             rules={{
               required: {
                 value: true,
@@ -59,7 +68,7 @@ const RegForm: NextPage = () => {
             }) => (
               <div className="relative my-4 ">
                 <div
-                  className={` w-full text-xs text-[#333333] sm:text-lg rounded-md border border-[#333333] appearance-none ${
+                  className={` w-full text-xs text-[#333333] sm:text-lg rounded-sm border border-[#333333] appearance-none ${
                     error ? " border-b-orange-400" : ""
                   } flex flex-row items-center`}
                 >
@@ -90,6 +99,7 @@ const RegForm: NextPage = () => {
           <Controller
             control={control}
             name="password"
+            defaultValue=""
             rules={{
               required: {
                 value: true,
@@ -117,7 +127,7 @@ const RegForm: NextPage = () => {
                   id="password"
                   value={value}
                   onChange={onChange}
-                  className={`block px-5 pb-1 pt-5 w-full text-xs text-[#333333] sm:text-lg rounded-md border border-[#333333]  appearance-none focus:outline-none focus:ring-0 peer ${
+                  className={`block px-5 pb-1 pt-5 w-full text-xs text-[#333333] sm:text-lg rounded-sm border border-[#333333]  appearance-none focus:outline-none focus:ring-0 peer ${
                     error ? " border-b-orange-400" : ""
                   }`}
                   placeholder=" "
@@ -173,10 +183,10 @@ const RegForm: NextPage = () => {
             className="group relative flex w-full mt-10 justify-center rounded-md border border-transparent bg-netflix py-3 px-7 sm:text-lg font-medium text-white hover:bg-red-700 focus:outline-none "
             onClick={(e: any) => {
               e.preventDefault();
-              handleSubmit(handleRegister)();
+              handleSubmit(handleNext)();
             }}
           >
-            Next
+            {isRegistering ? <Spinner /> : "Next"}
           </button>
         </div>
       </div>

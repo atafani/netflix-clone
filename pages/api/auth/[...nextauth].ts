@@ -2,8 +2,7 @@ import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
-import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
-import { connectMongoDb, connectToDatabase } from "../libs";
+import { connectToDatabase } from "../libs";
 import { User } from "../models";
 
 export const authOptions: NextAuthOptions = {
@@ -18,8 +17,9 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials: any) {
         await connectToDatabase(); // Your database connection function
         const { email, phone } = credentials;
-        const user = await User.findOne({ $or: [{ email }, { phone }] });
-
+        // const user = await User.findOne({ $or: [{ email }, { phone }] });
+        const user = await User.findOne({ email });
+        console.log("user", user);
         if (!user) {
           throw new Error("No user found with that email.");
         }
@@ -40,20 +40,34 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
-  adapter: MongoDBAdapter(connectMongoDb()),
+  session: {
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // The number of seconds until the session expires (e.g., 30 days).
+    updateAge: 24 * 60 * 60, // The number of seconds to wait before updating the session (e.g., 24 hours).
+  },
   callbacks: {
-    async jwt({ token }) {
-      token.userRole = "admin";
-      return token;
-    },
     async session({ session, token, user }) {
+      console.log("Session:", session);
+      console.log("Token:", token);
+      console.log("User:", user);
       return session;
     },
   },
   pages: {
     signIn: "/login",
   },
-  debug: true,
+  secret: process.env.NEXTAUTH_SECRET!,
+  logger: {
+    error(code, metadata) {
+      console.error("error", code, metadata);
+    },
+    warn(code) {
+      console.warn("warn", code);
+    },
+    debug(code, metadata) {
+      console.debug("debug", code, metadata);
+    },
+  },
 };
 
 export default NextAuth(authOptions);
