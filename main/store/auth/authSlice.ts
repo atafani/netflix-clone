@@ -64,7 +64,7 @@ export const register = createAsyncThunk(
   async (user: UserDTO, thunkAPI) => {
     try {
       const res = await authService.register({
-        email: user.email,
+        email: user.email!,
         password: user.password || "",
       });
       return res;

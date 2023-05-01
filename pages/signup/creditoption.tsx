@@ -5,6 +5,11 @@ import { BsCreditCard2Back } from "react-icons/bs";
 import Cleave from "cleave.js/react";
 import Image from "next/image";
 import Link from "next/link";
+import { useAuth } from "hooks";
+import { ePlanType } from "enums";
+import { api } from "config";
+import { ResponseDTO, UserDTO } from "dtos";
+import { useRouter } from "next/router";
 
 type CreditOptionForm = {
   cardNumber: string;
@@ -12,13 +17,28 @@ type CreditOptionForm = {
   cvv: string;
   firstName: string;
   lastName: string;
-  agreeToTerms: boolean;
+  agreedToTerms: boolean;
 };
 
 const CreditOption: NextPage = () => {
-  const { control, handleSubmit } = useForm<CreditOptionForm>();
-  const handleStartMembership = (data: CreditOptionForm) => {
-    console.log(data);
+  const { control, handleSubmit, watch } = useForm<CreditOptionForm>();
+  const { auth, handleUpdate } = useAuth();
+  const router = useRouter();
+  const handleStartMembership = async (data: CreditOptionForm) => {
+    const { cardNumber, ...rest } = data;
+    const user = {
+      cardNumber: parseInt(data.cardNumber.replaceAll(" ", "")),
+      ...rest,
+      ...auth.user,
+    };
+    const res: ResponseDTO<UserDTO> = await api.put(
+      `/api/user/${user._id}`,
+      user
+    );
+    if (res?.data) {
+      handleUpdate(res.data);
+      router.push("/browse");
+    }
   };
   return (
     <div className="relative">
@@ -50,6 +70,7 @@ const CreditOption: NextPage = () => {
           <Controller
             control={control}
             name="cardNumber"
+            defaultValue=""
             rules={{
               required: {
                 value: true,
@@ -97,6 +118,7 @@ const CreditOption: NextPage = () => {
             <Controller
               control={control}
               name="expDate"
+              defaultValue=""
               rules={{
                 required: {
                   value: true,
@@ -143,6 +165,7 @@ const CreditOption: NextPage = () => {
             <Controller
               control={control}
               name="cvv"
+              defaultValue=""
               rules={{
                 required: {
                   value: true,
@@ -168,6 +191,7 @@ const CreditOption: NextPage = () => {
                       className={`block px-4 pb-1 pt-5 flex-1 bg-inherit text-inherit focus:outline-none focus:ring-0 peer text-gray-400`}
                       placeholder=" "
                       autoComplete="off"
+                      maxLength={4}
                     />
                     <label
                       htmlFor="cvv"
@@ -187,6 +211,7 @@ const CreditOption: NextPage = () => {
           <Controller
             control={control}
             name="firstName"
+            defaultValue=""
             rules={{
               required: {
                 value: true,
@@ -229,6 +254,7 @@ const CreditOption: NextPage = () => {
           <Controller
             control={control}
             name="lastName"
+            defaultValue=""
             render={({
               field: { onChange, onBlur, value, name, ref },
               fieldState: { invalid, isTouched, isDirty, error },
@@ -264,7 +290,13 @@ const CreditOption: NextPage = () => {
           />
           <div className="flex flex-row justify-between items-center p-4 bg-gray-100 rounded-md my-3">
             <div>
-              <p className="font-medium">EUR9.99/month</p>
+              <p className="font-medium">{`EUR${
+                auth?.user?.plan === ePlanType.Basic
+                  ? "4.99"
+                  : auth?.user?.plan === ePlanType.Standard
+                  ? "7.99"
+                  : "9.99"
+              }/month`}</p>
               <p className="text-md text-gray-500">Premium</p>
             </div>
             <Link href="/signup/planform" className="text-blue-600 font-medium">
@@ -293,7 +325,7 @@ const CreditOption: NextPage = () => {
           </p>
           <Controller
             control={control}
-            name="agreeToTerms"
+            name="agreedToTerms"
             defaultValue={false}
             render={({
               field: { onChange, onBlur, value, name, ref },
@@ -303,12 +335,15 @@ const CreditOption: NextPage = () => {
               <div className="flex items-center">
                 <input
                   type="checkbox"
-                  id="remember-me"
+                  id="agreedToTerms"
                   className="accent-white mr-2"
                   checked={value}
                   onChange={onChange}
                 />
-                <label htmlFor="remember-me" className="text-gray-400 text-md">
+                <label
+                  htmlFor="agreedToTerms"
+                  className="text-gray-400 text-md"
+                >
                   I agree.
                 </label>
               </div>
@@ -316,6 +351,7 @@ const CreditOption: NextPage = () => {
           />
           <button
             type="submit"
+            disabled={watch("agreedToTerms") !== true}
             className="group relative flex w-full mt-10 justify-center rounded-sm border border-transparent bg-netflix py-3 px-7 sm:text-lg font-medium text-white hover:bg-red-700 focus:outline-none "
             onClick={(e: any) => {
               e.preventDefault();

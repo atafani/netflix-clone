@@ -5,6 +5,7 @@ import { MdOutlineLock } from "react-icons/md";
 import { SignUpFooter, SignUpHeader } from "views";
 import Image from "next/image";
 import { IoIosArrowForward } from "react-icons/io";
+import { useRouter } from "next/router";
 enum PaymentType {
   Card,
 }
@@ -13,8 +14,7 @@ type ChoosePayment = {
 };
 
 const PaymentPicker: NextPage = () => {
-  const ref = useRef<HTMLInputElement>(null);
-  const { control, handleSubmit } = useForm<ChoosePayment>();
+  const router = useRouter();
 
   return (
     <div className="relative">
@@ -31,7 +31,10 @@ const PaymentPicker: NextPage = () => {
           </p>
           <p className="font-medium">Secure for peace of mind.</p>
           <p className="font-medium">Cancel easily online.</p>
-          <div className="flex flex-row justify-between items-center px-3 py-5 border-2 border-gray-300 rounded-md hover:cursor-pointer mt-5">
+          <div
+            className="flex flex-row justify-between items-center px-3 py-5 border-2 border-gray-300 rounded-md hover:cursor-pointer mt-5"
+            onClick={() => router.push("/signup/creditoption")}
+          >
             <div className="flex flex-row gap-3">
               <p>Credit or Debit Card</p>
               <Image

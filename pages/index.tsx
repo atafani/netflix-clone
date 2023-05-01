@@ -65,9 +65,8 @@ const Index: NextPage = () => {
   };
 
   useEffect(() => {
-    if (session?.user) {
-      router.push("/browse");
-    }
+    const user: UserDTO = session?.user as UserDTO;
+    user?.plan ? router.push("/browse") : router.push("/signup/planform");
   }, [session]);
 
   return (
@@ -75,7 +74,7 @@ const Index: NextPage = () => {
       <div className="flex min-h-screen flex-row items-center justify-center bg-[url('/images/login-bg.png')] bg-no-repeat bg-cover bg-blend-darken relative">
         <div className="fixed z-10 top-0 left-0 right-0 bottom-0  bg-gradient-to-tr from-[#080A1B] opacity-40"></div>
         <div className="absolute z-20 top-0 left-0 right-0  bg-gradient-to-t to-[rgba(8,10,27,0.70)] from-[#080A1B] via-[#080A1B]">
-          <div className="flex flex-row justify-between p-5">
+          <div className="flex flex-row justify-between items-center p-5 md:px-10">
             <div>
               <Image src="/images/logo.png" alt="me" width="160" height="50" />
             </div>

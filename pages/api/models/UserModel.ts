@@ -51,8 +51,8 @@ const userSchema = new Schema({
     enum: [...Object.values(ePlanType)],
     required: false,
   },
-  token: {
-    type: String,
+  agreedToTerms: {
+    type: Boolean,
     required: false,
   },
 });

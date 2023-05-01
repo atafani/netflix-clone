@@ -1,6 +1,8 @@
+import axios from "axios";
 import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Home } from "views";
 type Profile = {
   id: number;
   name: string;
@@ -50,7 +52,9 @@ const Browse: NextPage = () => {
       </div>
     </div>
   ) : (
-    <div>test</div>
+    <div>
+      <Home />
+    </div>
   );
 };
 

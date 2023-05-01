@@ -4,6 +4,7 @@ import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import { connectToDatabase } from "../libs";
 import { User } from "../models";
+import { signIn } from "next-auth/react";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -47,11 +48,13 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async session({ session, token, user }) {
-      console.log("Session:", session);
-      console.log("Token:", token);
-      console.log("User:", user);
+      session.user = user;
       return session;
     },
+    // async signIn({ user, account, profile, email }) {
+
+    //   return user;
+    // },
   },
   pages: {
     signIn: "/login",

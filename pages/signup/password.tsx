@@ -1,3 +1,4 @@
+import { Spinner } from "components";
 import { useAuth } from "hooks";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
@@ -10,10 +11,11 @@ type RegistrationForm = {
 };
 const Password: NextPage = () => {
   const [isPasswordShown, setIsPasswordShown] = useState(false);
-  const { control, handleSubmit } = useForm<RegistrationForm>();
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const { control, handleSubmit, setValue } = useForm<RegistrationForm>();
   const { auth, handleLogin } = useAuth();
   const ref = useRef<HTMLInputElement>(null);
-  const router = useRouter();
+
   const handleShowPassword = () => {
     setIsPasswordShown(!isPasswordShown);
     if (ref.current) {
@@ -23,13 +25,13 @@ const Password: NextPage = () => {
   };
 
   const handleNext = async (data: RegistrationForm) => {
-    handleLogin(data);
+    setIsLoggingIn(true);
+    await handleLogin(data);
+    setIsLoggingIn(false);
   };
 
   useEffect(() => {
-    if (!auth?.user) {
-      router.push("/singup");
-    }
+    auth?.user?.email && setValue("email", auth.user.email);
   }, [auth]);
 
   return (
@@ -93,6 +95,7 @@ const Password: NextPage = () => {
           <Controller
             control={control}
             name="password"
+            defaultValue=""
             rules={{
               required: {
                 value: true,
@@ -156,7 +159,7 @@ const Password: NextPage = () => {
               handleSubmit(handleNext)();
             }}
           >
-            Next
+            {isLoggingIn ? <Spinner /> : "Next"}
           </button>
         </div>
       </div>

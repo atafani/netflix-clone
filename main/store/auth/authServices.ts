@@ -1,34 +1,47 @@
 import { api } from "config";
-import { ResponseDTO, UserDTO } from "dtos";
-import { signIn } from "next-auth/react";
+import { LoginDTO, ResponseDTO, UserDTO } from "dtos";
+import { signIn, useSession } from "next-auth/react";
+import { LOCALSTORAGE_SESSION_ID } from "utils/constants";
 
 // Register user
 type RegisterProps = {
   email: string;
   password?: string;
 };
+
 const register = async (userData: RegisterProps): Promise<UserDTO> => {
-  const response: ResponseDTO = await api.post("/api/auth/signup", userData);
-  if (response && !response.error) {
-    signIn("credentials", {
+  const response: ResponseDTO<UserDTO> = await api.post(
+    "/api/auth/signup",
+    userData
+  );
+  const newUser = response?.data;
+  console.log("new user", newUser);
+  if (newUser?._id) {
+    localStorage.setItem(LOCALSTORAGE_SESSION_ID, JSON.stringify(newUser._id));
+    newUser.password &&
+      (await signIn("credentials", {
+        email: newUser.email,
+        password: newUser.password,
+        redirect: false,
+      }));
+    return Promise.resolve(newUser);
+  }
+  return Promise.reject(response?.error);
+};
+
+const login = async (userData: LoginDTO) => {
+  console.log("user data", userData);
+  try {
+    const res = await signIn("credentials", {
       email: userData.email,
       password: userData.password,
       redirect: false,
     });
-  }
-  return response.data;
-};
-const login = async (userData: RegisterProps) => {
-  try {
-    // const response = await axios.post(baseURL + "/auth/login", userData);
-
-    const user = {
-      email: userData.email,
-    };
-    // if (response.data) {
-    //   setCookie("user", JSON.stringify(user), { maxAge: 60 * 60 * 24 * 30 });
-    // }
-    return user;
+    if (res?.ok) {
+      const user: ResponseDTO<UserDTO> = await api.get("/api/user");
+      console.log("user", user);
+    }
+    return { email: userData.email };
   } catch (error: any) {
     if (error.response) {
       throw {

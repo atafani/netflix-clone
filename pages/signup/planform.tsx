@@ -6,7 +6,7 @@ import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useRef, useState } from "react";
+import { Fragment, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { BiCheck } from "react-icons/bi";
 import { SignUpFooter, SignUpHeader } from "views";
@@ -47,8 +47,8 @@ const PlanForm: NextPage = () => {
     setIsRegistering(true);
     const newUser: UserDTO = { plan: data.type, ...auth.user };
     await handleUpdate(newUser);
-    if (!session) router.push("/");
     setIsRegistering(false);
+    !session ? router.push("/") : router.push("/signup/paymentPicker");
   };
 
   return (
@@ -153,7 +153,7 @@ const PlanForm: NextPage = () => {
                   </thead>
                   <tbody>
                     {PLAN_DATA.map((data: any) => (
-                      <div key={data.id}>
+                      <Fragment key={data.id}>
                         <tr className="lg:hidden">
                           <td colSpan={3} className="text-center text-sm pt-5">
                             {data.title}
@@ -194,7 +194,7 @@ const PlanForm: NextPage = () => {
                             {data.premium}
                           </td>
                         </tr>
-                      </div>
+                      </Fragment>
                     ))}
                     <tr className="lg:hidden">
                       <td colSpan={3} className="text-center text-sm pt-5">

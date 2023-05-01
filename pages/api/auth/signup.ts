@@ -6,7 +6,7 @@ import { IUser, User } from "../models";
 
 export default async (
   req: NextApiRequest,
-  res: NextApiResponse<ResponseDTO>
+  res: NextApiResponse<ResponseDTO<UserDTO>>
 ) => {
   try {
     if (req.method === "POST") {
@@ -23,16 +23,15 @@ export default async (
         { email },
         { password, salt },
         { new: true }
-      );
+      ).select("-salt");
 
       if (existingUserDoc)
-        return res.status(409).json({
+        return res.status(201).json({
           data: {
             ...existingUserDoc._doc,
             password: null,
             registered: !!existingUserDoc._doc.password,
           },
-          message: "User alreasy exists.",
         });
 
       const user = await User.create({ email });
@@ -41,6 +40,7 @@ export default async (
         data: {
           ...user._doc,
           password: null,
+          salt: null,
           registered: !!user.password,
         },
         message: "Account created succesfully.",

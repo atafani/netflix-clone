@@ -11,6 +11,7 @@ import {
 import { FaCaretDown } from "react-icons/fa";
 import { SignInResponse, signIn, useSession } from "next-auth/react";
 import { eSessionStatus } from "enums";
+import { UserDTO } from "dtos";
 type SignInForm = {
   emailPhone: string;
   password: string;
@@ -32,7 +33,8 @@ const Login: NextPage = () => {
   });
 
   useEffect(() => {
-    if (status === eSessionStatus.Authenticated) router.push("/browse");
+    const user: UserDTO = session?.user as UserDTO;
+    user?.plan ? router.push("/browse") : router.push("/signup/planform");
   }, [status]);
 
   const handleShowPassword = () => {

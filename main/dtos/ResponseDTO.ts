@@ -1,7 +1,5 @@
-import { ePlanType } from "enums";
-
-export type ResponseDTO = {
-  data?: any;
+export type ResponseDTO<T> = {
+  data?: T;
   error?: Error;
   message?: string;
 };

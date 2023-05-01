@@ -54,8 +54,8 @@ api.interceptors.response.use(
   async (response) => {
     console.log("axios res", response);
     let data = null;
-    if (response?.data?.result) {
-      data = response.data.data;
+    if (response?.data) {
+      data = response.data;
     }
     // if (response?.data?.statusCode === 401) {
     //   const retryResponse: any = await refreshToken(response);
