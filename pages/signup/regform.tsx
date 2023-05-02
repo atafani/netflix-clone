@@ -13,13 +13,14 @@ type RegistrationForm = {
 const RegForm: NextPage = () => {
   const [isPasswordShown, setIsPasswordShown] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
-  const { control, handleSubmit } = useForm<RegistrationForm>();
+  const { control, handleSubmit, setValue } = useForm<RegistrationForm>();
   const { auth, handleRegister } = useAuth();
   const ref = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
   useEffect(() => {
     if (router && auth.user?.registered) router.push("/signup");
+    auth?.user?.email && setValue("email", auth.user.email);
   }, [router, auth]);
 
   const handleShowPassword = () => {

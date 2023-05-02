@@ -18,6 +18,7 @@ const useAuth = () => {
   const handleRegister = async (user: UserDTO) => {
     try {
       await dispatch(register(user));
+      return true;
     } catch (error) {
       console.error("Failed to fetch user:", error);
     }

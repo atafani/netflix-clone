@@ -59,9 +59,9 @@ const Index: NextPage = () => {
 
   const handleGetStarted = async (data: GetStartedForm) => {
     setIsRegistering(true);
-    await handleRegister(data);
+    const res = await handleRegister(data);
     setIsRegistering(false);
-    router.push("/signup/registration");
+    res && router.push("/signup/registration");
   };
 
   useEffect(() => {
