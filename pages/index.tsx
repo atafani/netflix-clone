@@ -66,7 +66,9 @@ const Index: NextPage = () => {
 
   useEffect(() => {
     const user: UserDTO = session?.user as UserDTO;
-    user?.plan ? router.push("/browse") : router.push("/signup/planform");
+    if (user) {
+      user.plan ? router.push("/browse") : router.push("/signup/planform");
+    }
   }, [session]);
 
   return (
