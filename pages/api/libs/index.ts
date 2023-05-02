@@ -1,3 +1,3 @@
-import { connectToDatabase, connectMongoDb } from "./db";
+import { connectToDatabase } from "./db";
 
-export { connectToDatabase, connectMongoDb };
+export { connectToDatabase };
