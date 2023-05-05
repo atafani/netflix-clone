@@ -54,7 +54,7 @@ const Index: NextPage = () => {
   });
 
   useEffect(() => {
-    if (status === eSessionStatus.Authenticated) router.push("/browse");
+    // if (status === eSessionStatus.Authenticated) router.push("/browse");
   }, [status]);
 
   const handleGetStarted = async (data: GetStartedForm) => {
@@ -307,7 +307,7 @@ const Index: NextPage = () => {
                   className="group w-full min-w-[9rem] justify-center rounded-md border border-transparent bg-netflix py-3 px-5 sm:text-xl font-medium text-white hover:bg-red-700 focus:outline-none "
                   onClick={(e: any) => {
                     e.preventDefault();
-                    handleSubmit(handleGetStarted)();
+                    handleSubmit1(handleGetStarted)();
                   }}
                 >
                   {isRegistering ? <Spinner /> : "Get Started"}

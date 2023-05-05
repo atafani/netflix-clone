@@ -9,6 +9,7 @@ async function connectToDatabase(): Promise<typeof mongoose> {
     }
     return await mongoose.connect(mongoDbURI);
   } catch (error: any) {
+    console.log("error connectin to database", error);
     return Promise.reject(error);
   }
 }

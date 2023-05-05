@@ -15,7 +15,7 @@ const Password: NextPage = () => {
   const { control, handleSubmit, setValue } = useForm<RegistrationForm>();
   const { auth, handleLogin } = useAuth();
   const ref = useRef<HTMLInputElement>(null);
-
+  const router = useRouter();
   const handleShowPassword = () => {
     setIsPasswordShown(!isPasswordShown);
     if (ref.current) {
@@ -26,8 +26,9 @@ const Password: NextPage = () => {
 
   const handleNext = async (data: RegistrationForm) => {
     setIsLoggingIn(true);
-    await handleLogin(data);
+    const res = await handleLogin(data);
     setIsLoggingIn(false);
+    res && router.push("/signup");
   };
 
   useEffect(() => {

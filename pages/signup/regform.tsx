@@ -33,8 +33,9 @@ const RegForm: NextPage = () => {
 
   const handleNext = async (data: RegistrationForm) => {
     setIsRegistering(true);
-    await handleRegister(data);
+    const res = await handleRegister(data);
     setIsRegistering(false);
+    res && router.push("/signup");
   };
 
   return (

@@ -10,6 +10,7 @@ const useAuth = () => {
   const handleLogin = async (user: LoginDTO) => {
     try {
       await dispatch(login(user));
+      return true;
     } catch (error) {
       console.error("Failed to fetch user:", error);
     }
