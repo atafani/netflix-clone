@@ -8,19 +8,14 @@ import { signIn } from "next-auth/react";
 
 export const authOptions: NextAuthOptions = {
   providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_ID!,
-      clientSecret: process.env.GOOGLE_SECRET!,
-    }),
     Credentials({
       name: "Email and Password",
       credentials: {},
       async authorize(credentials: any) {
-        await connectToDatabase(); // Your database connection function
+        await connectToDatabase();
         const { email, phone } = credentials;
         // const user = await User.findOne({ $or: [{ email }, { phone }] });
         const user = await User.findOne({ email });
-        console.log("user", user);
         if (!user) {
           throw new Error("No user found with that email.");
         }
@@ -48,18 +43,17 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async session({ session, token, user }) {
-      session.user = user;
+      await connectToDatabase();
+      const loggedUser = await User.findOne({ email: session?.user?.email });
+      session.user = loggedUser;
       return session;
     },
-    // async signIn({ user, account, profile, email }) {
-
-    //   return user;
-    // },
   },
   pages: {
     signIn: "/login",
   },
   secret: process.env.NEXTAUTH_SECRET!,
+
   logger: {
     error(code, metadata) {
       console.error("error", code, metadata);

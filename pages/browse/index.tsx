@@ -1,7 +1,8 @@
 import axios from "axios";
+import { api } from "config";
 import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Home } from "views";
 type Profile = {
   id: number;
@@ -29,7 +30,13 @@ const Browse: NextPage = () => {
       console.log("WHY IS IT NOT AUTHENTICATED");
     },
   });
-
+  const handleGetMovies = useCallback(async () => {
+    const res = await api.get("/api/movies");
+    console.log("moveis res", res);
+  }, []);
+  useEffect(() => {
+    handleGetMovies();
+  }, [handleGetMovies]);
   return !selectedProfile ? (
     <div className="flex min-h-screen flex-col items-center gap-10 justify-center bg-black relative md:py-20">
       <h1 className="text-white text-5xl">Who's watching?</h1>

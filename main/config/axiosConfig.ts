@@ -74,7 +74,7 @@ api.interceptors.response.use(
       }
     }
     if (error.response?.status === 409) return error.response.data;
-    return Promise.reject(error);
+    return Promise.resolve();
   },
   { synchronous: false }
 );

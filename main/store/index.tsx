@@ -12,18 +12,11 @@ const getStore = () => {
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({ serializableCheck: false }),
   });
-  if (typeof window !== "undefined") {
-    const session_id = localStorage.getItem(LOCALSTORAGE_SESSION_ID);
-    if (session_id) {
-      api
-        .get(`/api/user/${JSON.parse(session_id)}`)
-        .then((res: ResponseDTO<UserDTO>) => {
-          if (res?.data) {
-            store.dispatch(setUser(res.data));
-          }
-        });
+  api.get(`/api/user`).then((res: ResponseDTO<UserDTO>) => {
+    if (res?.data) {
+      store.dispatch(setUser(res.data));
     }
-  }
+  });
 
   return store;
 };

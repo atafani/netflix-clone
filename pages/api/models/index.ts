@@ -1,3 +1,4 @@
+import Movie, { IMovie } from "./Movie";
 import User, { IUser } from "./UserModel";
-export { User };
-export type { IUser };
+export { User, Movie };
+export type { IUser, IMovie };

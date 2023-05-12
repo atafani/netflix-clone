@@ -33,7 +33,7 @@ const Movie = (props: MovieProps) => {
     <div className="flex flex-row gap-10">
       {movies.map((movie: any) => {
         return (
-          <div key={movie.id}>
+          <div key={movie.id} className="my-3">
             {movie.title}
             <Image
               src={`https://image.tmdb.org/t/p/${movie.poater_path}`}

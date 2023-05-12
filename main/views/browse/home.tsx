@@ -1,41 +1,60 @@
-import type { NextPage } from "next";
-import Link from "next/link";
-import Image from "next/image";
-import { signOut, useSession } from "next-auth/react";
-import { useEffect, useState, MouseEvent, useCallback } from "react";
-import { eSessionStatus } from "enums";
-import axios from "axios";
+import { useEffect, useState, useCallback } from "react";
 import { Navbar } from "components";
+import { api } from "config";
 import MoviesByGenre from "./moviesByGenre";
-type Genre = {
-  id: number;
-  name: string;
-};
+import { MovieDTO } from "dtos";
+import Image from "next/image";
+
 const Home = () => {
-  const [genres, setGenres] = useState<Genre[]>([]);
-  const handleGetMovies = useCallback(async () => {
-    const res = await axios.get(
-      "https://api.themoviedb.org/3/genre/movie/list?api_key=21773f739f2c79d204754f82c4645dd9"
-    );
-    if (res?.data?.genres) {
-      setGenres(res.data.genres);
+  const [genres, setGenres] = useState<string[]>([]);
+  const [showcaseMovie, setShowcaseMovie] = useState<MovieDTO>();
+
+  const handleGenres = useCallback(async () => {
+    const res = await api.get("/api/movies/genres");
+    if (res?.data) {
+      console.log(res.data);
+      setGenres(res.data);
+    }
+  }, []);
+
+  const handleGetShowcase = useCallback(async () => {
+    const res = await api.get("/api/movies/showcase");
+    if (res?.data) {
+      setShowcaseMovie(res.data);
     }
   }, []);
 
   useEffect(() => {
-    handleGetMovies();
-  }, [handleGetMovies]);
+    handleGenres();
+  }, [handleGenres]);
+
+  useEffect(() => {
+    handleGetShowcase();
+  }, [handleGetShowcase]);
 
   return (
     <div className="min-h-full bg-black text-white">
       <Navbar />
-      <div className="px-16">
+      {showcaseMovie ? (
+        <div className="h-[75vh]">
+          <Image
+            src={`${showcaseMovie.poster}`}
+            width={1400}
+            height={1000}
+            alt={showcaseMovie.title}
+            className="w-full max-h-full object-contain rounded-sm"
+          />
+        </div>
+      ) : (
+        ""
+      )}
+      <div className="px-7 md:px-16">
         {genres.length > 0 &&
-          genres.map((genre: Genre) => {
+          genres.map((genre: string) => {
             return (
-              <div key={genre.id}>
-                <p className="text-xl">{genre.name}</p>
-                <MoviesByGenre genreId={genre.id} />
+              <div key={genre}>
+                <p className="text-xl">{genre}</p>
+                <MoviesByGenre genre={genre} />
               </div>
             );
           })}

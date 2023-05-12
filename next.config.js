@@ -6,6 +6,7 @@ module.exports = {
       "assets.nflxext.com",
       "occ-0-6035-114.1.nflxso.net",
       "image.tmdb.org",
+      "m.media-amazon.com",
     ],
   },
 };
