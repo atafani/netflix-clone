@@ -1,14 +1,9 @@
-import axios from "axios";
-import { ResponseDTO, UserDTO } from "dtos";
+import { ResponseDTO } from "dtos";
 import { NextApiRequest, NextApiResponse } from "next";
-import { getSession, useSession } from "next-auth/react";
+import { getSession } from "next-auth/react";
 import { connectToDatabase } from "../libs";
-import { IMovie } from "../models";
-const imdb = require("imdb-api");
-
 const { Movie } = require("../models");
-const apiKey = "9445686";
-const cli = new imdb.Client({ apiKey });
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseDTO<any>>
