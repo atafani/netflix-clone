@@ -27,26 +27,25 @@ const Navbar = () => {
           />
         </div>
         <div
-          className={`${
+          className={`fixed ${
             isNavbarOpen ? "left-0" : "-left-full"
-          } transition-all duration-500 gap-5 p-6 md:p-0 text-sm flex flex-col md:flex-row fixed top-16 h-full bottom-0 left-0 z-40 bg-black md:static`}
+          } transition-all duration-500 gap-5 p-6 md:p-0 text-sm flex flex-col md:flex-row  top-16 h-full bottom-0 z-40 bg-black md:static`}
         >
-          <div className="md:hidden bg-black/90 rounded-sm divide-y">
-            <Link
-              href="#"
-              onClick={() => signOut()}
-              className="block hover:underline border-t-white  my-2"
-            >
-              Account
-            </Link>
-            <Link
-              href="#"
-              onClick={() => signOut()}
-              className="block hover:underline border-t-white  my-2"
-            >
-              Sign Out of Netflix
-            </Link>
-          </div>
+          <Link
+            href="#"
+            onClick={() => signOut()}
+            className="block hover:underline border-t-white"
+          >
+            Account
+          </Link>
+          <Link
+            href="#"
+            onClick={() => signOut()}
+            className="block hover:underline border-t-white"
+          >
+            Sign Out of Netflix
+          </Link>
+          <div className="h-[0.3px] rounded-sm bg-gray-300"></div>
           <Link href="#">Home</Link>
           <Link href="#">TV Shows</Link>
           <Link href="#">Movies</Link>
@@ -76,6 +75,13 @@ const Navbar = () => {
           )}
           <div className="hidden pt-5 absolute top-full right-0 min-w-[11rem] hover:cursor-pointer text-center group-hover:block">
             <div className=" bg-black/90 rounded-sm divide-y">
+              <Link
+                href="#"
+                onClick={() => signOut()}
+                className="block hover:underline border-t-white  my-2"
+              >
+                Account
+              </Link>
               <Link
                 href="#"
                 onClick={() => signOut()}

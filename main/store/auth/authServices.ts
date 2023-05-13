@@ -39,9 +39,9 @@ const login = async (userData: LoginDTO) => {
     });
     if (res?.ok) {
       const user: ResponseDTO<UserDTO> = await api.get("/api/user");
-      console.log("user", user);
+      return user.data || null;
     }
-    return { email: userData.email };
+    return null;
   } catch (error: any) {
     if (error.response) {
       throw {

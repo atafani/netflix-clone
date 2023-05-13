@@ -48,6 +48,7 @@ const PlanForm: NextPage = () => {
     const newUser: UserDTO = { plan: data.type, ...auth.user };
     await handleUpdate(newUser);
     setIsRegistering(false);
+    console.log(session);
     !session ? router.push("/") : router.push("/signup/paymentPicker");
   };
 

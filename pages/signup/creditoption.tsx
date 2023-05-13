@@ -327,6 +327,12 @@ const CreditOption: NextPage = () => {
             control={control}
             name="agreedToTerms"
             defaultValue={false}
+            rules={{
+              required: {
+                value: true,
+                message: "",
+              },
+            }}
             render={({
               field: { onChange, onBlur, value, name, ref },
               fieldState: { invalid, isTouched, isDirty, error },
@@ -336,13 +342,15 @@ const CreditOption: NextPage = () => {
                 <input
                   type="checkbox"
                   id="agreedToTerms"
-                  className="accent-white mr-2"
+                  className={`accent-white mr-2 `}
                   checked={value}
                   onChange={onChange}
                 />
                 <label
                   htmlFor="agreedToTerms"
-                  className="text-gray-400 text-md"
+                  className={` text-md ${
+                    error ? "text-red-500 " : "text-gray-400"
+                  }`}
                 >
                   I agree.
                 </label>
@@ -352,7 +360,7 @@ const CreditOption: NextPage = () => {
           <button
             type="submit"
             disabled={watch("agreedToTerms") !== true}
-            className="group relative flex w-full mt-10 justify-center rounded-sm border border-transparent bg-netflix py-3 px-7 sm:text-lg font-medium text-white hover:bg-red-700 focus:outline-none "
+            className="group hover:cursor-pointer relative flex w-full mt-10 justify-center rounded-sm border border-transparent bg-netflix py-3 px-7 sm:text-lg font-medium text-white hover:bg-red-700 focus:outline-none "
             onClick={(e: any) => {
               e.preventDefault();
               handleSubmit(handleStartMembership)();

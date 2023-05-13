@@ -20,12 +20,6 @@ export function getToken(): TokenDTO {
   return data.token;
 }
 
-export const clearToken = () => {
-  if (!isServer()) {
-    Router.push("/login");
-  }
-};
-
 export const setContext = (_context: GetServerSidePropsContext) => {
   context = _context;
 };
@@ -66,12 +60,8 @@ api.interceptors.response.use(
   async (error: AxiosError<any>) => {
     // check conditions to refresh token
     console.log("axios error", error);
-    if (error.response?.status === 401) {
-      clearToken();
-    } else {
-      if (error.response?.data?.error) {
-        toast.error(error.response?.data?.error);
-      }
+    if (error.response?.data?.error) {
+      toast.error(error.response?.data?.error);
     }
     if (error.response?.status === 409) return error.response.data;
     return Promise.resolve();
@@ -117,16 +107,10 @@ const refreshToken = async (response: any) => {
 
       if (data && data.accessToken && data.refreshToken) {
         onAccessTokenFetched(data.accessToken);
-      } else {
-        clearToken();
       }
     }
     return retryOriginalRequest;
   } catch (error) {
-    // on error go to login page
-    if (!isServer() && !Router.asPath.includes("authentication/login")) {
-      clearToken();
-    }
     return Promise.reject(response);
   } finally {
     fetchingToken = false;

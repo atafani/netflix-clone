@@ -2,6 +2,7 @@ import axios from "axios";
 import { api } from "config";
 import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import { Home } from "views";
 type Profile = {
@@ -23,11 +24,12 @@ const PROFILES: Profile[] = [
 ];
 const Browse: NextPage = () => {
   const [selectedProfile, setSelectedProfile] = useState<Profile>(PROFILES[0]);
+  const router = useRouter();
   const { data: session, status } = useSession({
     required: true,
     onUnauthenticated() {
       // The user is not authenticated, handle it here.
-      console.log("WHY IS IT NOT AUTHENTICATED");
+      router.push("/");
     },
   });
   const handleGetMovies = useCallback(async () => {

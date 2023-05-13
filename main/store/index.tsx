@@ -12,11 +12,20 @@ const getStore = () => {
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({ serializableCheck: false }),
   });
-  api.get(`/api/user`).then((res: ResponseDTO<UserDTO>) => {
-    if (res?.data) {
-      store.dispatch(setUser(res.data));
-    }
-  });
+  if (typeof window !== "undefined") {
+    const sessionId = JSON.parse(localStorage.getItem("session_id") || "");
+    api.get(`/api/user/${sessionId}`).then((res: ResponseDTO<UserDTO>) => {
+      if (res?.data) {
+        store.dispatch(setUser(res.data));
+      }
+    });
+  } else {
+    api.get(`/api/user`).then((res: ResponseDTO<UserDTO>) => {
+      if (res?.data) {
+        store.dispatch(setUser(res.data));
+      }
+    });
+  }
 
   return store;
 };
